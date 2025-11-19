@@ -16,18 +16,20 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
   // Handle text inputs, selects, radio
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    
+    let processedValue = value;
+
     // Specific logic for numeric phone input
     if (name === 'contactNumber') {
-      const numericValue = value.replace(/\D/g, '').slice(0, 10);
-      setFormData(prev => ({ ...prev, [name]: numericValue }));
-    } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      processedValue = value.replace(/\D/g, '').slice(0, 10);
     }
 
+    // Update state
+    setFormData(prev => ({ ...prev, [name]: processedValue }));
+
     // Real-time validation if field is already touched
+    // CRITICAL FIX: Validate against processedValue, not raw value
     if (touched[name]) {
-        const newErrors = validateForm({ ...formData, [name]: value });
+        const newErrors = validateForm({ ...formData, [name]: processedValue });
         setErrors(prev => ({ ...prev, [name]: newErrors[name as keyof FormErrors] }));
     }
   };
@@ -39,8 +41,10 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
         ? prev.skills.filter(s => s !== skill)
         : [...prev.skills, skill];
       
+      // Validate immediately on toggle
       const newErrors = validateForm({ ...prev, skills });
       setErrors(err => ({ ...err, skills: newErrors.skills }));
+      
       return { ...prev, skills };
     });
   };
@@ -68,7 +72,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
 
   // Helper for error display
   const ErrorMsg = ({ msg }: { msg?: string }) => (
-    <div className={cn("flex items-center mt-1 text-xs text-red-500 transition-all duration-300 overflow-hidden h-0", msg ? "h-5 opacity-100" : "h-0 opacity-0")}>
+    <div className={cn("flex items-center mt-1 text-xs text-red-500 transition-all duration-300 overflow-hidden", msg ? "h-5 opacity-100" : "h-0 opacity-0")}>
       {msg && <><AlertCircle className="w-3 h-3 mr-1" /> {msg}</>}
     </div>
   );
@@ -83,7 +87,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Please fill in the information below.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         
         {/* Row 1: Name & Email */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -137,7 +141,7 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
                 +91
               </span>
               <input
-                type="text"
+                type="tel"
                 name="contactNumber"
                 value={formData.contactNumber}
                 onChange={handleChange}
@@ -190,11 +194,12 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
                     onChange={handleChange}
                     onBlur={() => handleBlur('dateTime')}
                     className={cn(
-                    "w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none transition-all text-slate-700 dark:text-slate-200",
+                    "w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border rounded-lg focus:ring-2 focus:ring-primary-500 outline-none transition-all text-slate-700 dark:text-slate-200 placeholder-slate-400",
                     errors.dateTime ? "border-red-500 focus:ring-red-500" : "border-slate-200 dark:border-slate-700"
                     )}
                 />
-                <Calendar className="absolute left-3 top-3 w-4 h-4 text-slate-400" />
+                {/* Note: Calendar icon position might need adjustment depending on browser's native date picker appearance */}
+                {(!formData.dateTime) && <Calendar className="absolute left-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />}
             </div>
             <ErrorMsg msg={errors.dateTime} />
           </div>
