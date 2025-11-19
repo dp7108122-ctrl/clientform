@@ -23,30 +23,32 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
       processedValue = value.replace(/\D/g, '').slice(0, 10);
     }
 
-    // Update state
-    setFormData(prev => ({ ...prev, [name]: processedValue }));
+    // Calculate new state object
+    const updatedFormData = { ...formData, [name]: processedValue };
+    setFormData(updatedFormData);
 
     // Real-time validation if field is already touched
-    // CRITICAL FIX: Validate against processedValue, not raw value
     if (touched[name]) {
-        const newErrors = validateForm({ ...formData, [name]: processedValue });
+        const newErrors = validateForm(updatedFormData);
         setErrors(prev => ({ ...prev, [name]: newErrors[name as keyof FormErrors] }));
     }
   };
 
   // Handle Chips (Multi-select)
   const toggleSkill = (skill: string) => {
-    setFormData(prev => {
-      const skills = prev.skills.includes(skill)
-        ? prev.skills.filter(s => s !== skill)
-        : [...prev.skills, skill];
+    // Calculate new skills array based on current state
+    const isSelected = formData.skills.includes(skill);
+    const newSkills = isSelected 
+      ? formData.skills.filter(s => s !== skill) 
+      : [...formData.skills, skill];
+    
+    // Update Form Data
+    const updatedFormData = { ...formData, skills: newSkills };
+    setFormData(updatedFormData);
       
-      // Validate immediately on toggle
-      const newErrors = validateForm({ ...prev, skills });
-      setErrors(err => ({ ...err, skills: newErrors.skills }));
-      
-      return { ...prev, skills };
-    });
+    // Validate immediately on toggle
+    const newErrors = validateForm(updatedFormData);
+    setErrors(prev => ({ ...prev, skills: newErrors.skills }));
   };
 
   // Handle Blur for validation
