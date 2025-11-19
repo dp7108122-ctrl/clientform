@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import { ThemeToggle } from './components/ui/ThemeToggle';
-import { ClientForm } from './components/ClientForm';
-import { OutputCard } from './components/OutputCard';
-import { ClientFormData } from './types';
+import { ThemeToggle } from './components/ui/ThemeToggle.tsx';
+import { ClientForm } from './components/ClientForm.tsx';
+import { OutputCard } from './components/OutputCard.tsx';
+import { ClientFormData } from './types.ts';
 import { Zap } from 'lucide-react';
 
 const INITIAL_DATA: ClientFormData = {

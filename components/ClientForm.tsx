@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Check, AlertCircle, Calendar, MapPin, Briefcase, User, Mail, Phone } from 'lucide-react';
-import { ClientFormData, FormErrors, SKILL_OPTIONS, SERVICE_OPTIONS } from '../types';
-import { validateForm, cn } from '../utils';
+import { ClientFormData, FormErrors, SKILL_OPTIONS, SERVICE_OPTIONS } from '../types.ts';
+import { validateForm, cn } from '../utils.ts';
 
 interface ClientFormProps {
   initialData: ClientFormData;

@@ -1,4 +1,4 @@
-import { ClientFormData, FormErrors } from './types';
+import { ClientFormData, FormErrors } from './types.ts';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 

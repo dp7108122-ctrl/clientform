@@ -1,6 +1,6 @@
 import React from 'react';
 import { Edit2, Trash2, User, Mail, Phone, Calendar, MapPin, Layers, CheckCircle } from 'lucide-react';
-import { ClientFormData } from '../types';
+import { ClientFormData } from '../types.ts';
 
 interface OutputCardProps {
   data: ClientFormData;
