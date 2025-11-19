@@ -200,7 +200,6 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
                     errors.dateTime ? "border-red-500 focus:ring-red-500" : "border-slate-200 dark:border-slate-700"
                     )}
                 />
-                {/* Note: Calendar icon position might need adjustment depending on browser's native date picker appearance */}
                 {(!formData.dateTime) && <Calendar className="absolute left-3 top-3 w-4 h-4 text-slate-400 pointer-events-none" />}
             </div>
             <ErrorMsg msg={errors.dateTime} />
