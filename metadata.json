@@ -1,0 +1,5 @@
+{
+  "name": "Elite Client Form",
+  "description": "A high-performance, responsive client intake form featuring real-time validation, dynamic theming (Dark/Light mode), and interactive data preview. Built with React, TypeScript, and Tailwind CSS.",
+  "requestFramePermissions": []
+}
