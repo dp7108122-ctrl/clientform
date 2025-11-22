@@ -1,5 +1,5 @@
-import React, { useState, ChangeEvent } from 'react';
-import { Check, AlertCircle, Calendar, MapPin, Briefcase, User, Mail, Phone } from 'lucide-react';
+import React, { useState, ChangeEvent, useEffect } from 'react';
+import { Check, AlertCircle, Calendar, MapPin, Briefcase, User, Mail, Phone, RefreshCw } from 'lucide-react';
 import { ClientFormData, FormErrors, SKILL_OPTIONS, SERVICE_OPTIONS } from '../types.ts';
 import { validateForm, cn } from '../utils.ts';
 
@@ -12,6 +12,13 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
   const [formData, setFormData] = useState<ClientFormData>(initialData);
   const [errors, setErrors] = useState<FormErrors>({});
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  // Update local state when initialData prop changes (e.g. when editing)
+  useEffect(() => {
+    setFormData(initialData);
+    setErrors({});
+    setTouched({});
+  }, [initialData]);
 
   // Handle text inputs, selects, radio
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -79,14 +86,18 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
     </div>
   );
 
+  const isEditing = !!formData.id;
+
   return (
     <div className="bg-white dark:bg-slate-800 p-8 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 transition-all duration-500 animate-fade-in-up">
       <div className="mb-6 border-b border-slate-100 dark:border-slate-700 pb-4">
         <h2 className="text-2xl font-bold text-slate-800 dark:text-white flex items-center gap-2">
           <User className="w-6 h-6 text-primary-600" />
-          Client Details
+          {isEditing ? 'Edit Client Details' : 'Client Details'}
         </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Please fill in the information below.</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+          {isEditing ? 'Update the information below.' : 'Please fill in the information below.'}
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -286,10 +297,18 @@ export const ClientForm: React.FC<ClientFormProps> = ({ initialData, onSubmit })
         <div className="pt-4">
           <button
             type="submit"
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2"
+            className={cn(
+              "w-full text-white font-semibold py-3 rounded-lg shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2",
+              isEditing 
+                ? "bg-amber-600 hover:bg-amber-700 shadow-amber-500/30"
+                : "bg-indigo-600 hover:bg-indigo-700 shadow-indigo-500/30"
+            )}
           >
-            <span>Submit Application</span>
-            <Check className="w-5 h-5" />
+            {isEditing ? (
+              <><span>Update Application</span><RefreshCw className="w-5 h-5" /></>
+            ) : (
+              <><span>Submit Application</span><Check className="w-5 h-5" /></>
+            )}
           </button>
         </div>
       </form>

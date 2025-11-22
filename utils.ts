@@ -6,6 +6,18 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export const INITIAL_DATA: ClientFormData = {
+  id: '',
+  fullName: '',
+  email: '',
+  contactNumber: '',
+  skills: [],
+  dateTime: '',
+  address: '',
+  gender: '',
+  serviceType: ''
+};
+
 export const validateForm = (data: ClientFormData): FormErrors => {
   const errors: FormErrors = {};
 
@@ -40,7 +52,7 @@ export const validateForm = (data: ClientFormData): FormErrors => {
     errors.dateTime = 'Date & Time is required';
   }
 
-  // Address: Required (Optional strictly speaking based on user prompt but good practice)
+  // Address: Required
   if (!data.address.trim()) {
     errors.address = 'Address is required';
   }
